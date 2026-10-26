@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E8F7E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Habit Workbook</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap">
+<style>
+:root{--paper:#EEF3F7;--card:#FFFFFF;--ink:#14213D;--mute:#5B6B82;--grid:#D5DEE8;--acc:#0E8F7E;--accsoft:#CFEFE9;--mark:#E8A317;--danger:#C2372B;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--f:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0E1620;--card:#16212E;--ink:#E7EEF6;--mute:#93A3B8;--grid:#263548;--acc:#2CC3AE;--accsoft:#133A38;--mark:#F2B134;--danger:#F0776B}}
+:root[data-theme="dark"]{--paper:#0E1620;--card:#16212E;--ink:#E7EEF6;--mute:#93A3B8;--grid:#263548;--acc:#2CC3AE;--accsoft:#133A38;--mark:#F2B134;--danger:#F0776B}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:var(--f);color:var(--ink);background-color:var(--paper);
+background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-attachment:fixed;padding-bottom:84px}
+.wrap{max-width:520px;margin:0 auto;padding:18px 16px}
+h1{font-size:30px;line-height:1.05;margin:0;font-weight:800;letter-spacing:-.02em}
+h2{font-size:17px;margin:0;font-weight:700}
+.sub{color:var(--mute);font-size:14px;margin-top:4px}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px;margin-top:14px;box-shadow:4px 4px 0 var(--ink)}
+.row{display:flex;align-items:center;gap:12px}
+.grow{flex:1;min-width:0}
+button{font:inherit;color:inherit;cursor:pointer}
+.chk{width:44px;height:44px;flex:none;border-radius:12px;border:2px solid var(--ink);background:var(--card);font-size:22px;display:grid;place-items:center}
+.chk.on{background:var(--acc);color:#fff;border-color:var(--ink)}
+.emoji{font-size:24px;width:36px;text-align:center;flex:none}
+.name{font-weight:700;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{font-size:13px;color:var(--mute)}
+.bar{height:12px;border:2px solid var(--ink);border-radius:8px;background:var(--paper);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--acc)}
+.bar i.full{background:var(--mark)}
+.ring{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;flex:none;border:2px solid var(--ink)}
+.ring b{width:46px;height:46px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:14px}
+.seg{display:flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--card);margin-top:14px}
+.seg button{flex:1;border:0;background:none;padding:10px;font-weight:700}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.nav button{width:44px;height:44px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-size:18px}
+.nav span{font-weight:700}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:340px}
+th,td{text-align:center;padding:6px 2px;font-size:13px}
+th{color:var(--mute);font-weight:600}
+td.l,th.l{text-align:left;padding-left:2px}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);background:var(--card);padding:0}
+.dot.on{background:var(--acc)}
+.dot.today{outline:3px solid var(--mark);outline-offset:1px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.cal div{aspect-ratio:1;border:1.5px solid var(--grid);border-radius:6px;font-size:10px;color:var(--mute);padding:2px 3px}
+.cal div.on{background:var(--acc);border-color:var(--ink);color:#fff}
+.cal div.x{border:0}
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--ink);display:flex;padding:6px 8px calc(8px + env(safe-area-inset-bottom,0px));z-index:5}
+.tabbar button{flex:1;border:0;background:none;padding:6px;font-size:13px;font-weight:700;color:var(--mute);display:grid;gap:2px;justify-items:center}
+.tabbar button span{font-size:20px}
+.tabbar button.on{color:var(--acc)}
+.btn{border:2px solid var(--ink);background:var(--acc);color:#fff;border-radius:12px;padding:12px 16px;font-weight:700;width:100%;margin-top:14px;font-size:16px}
+.btn.ghost{background:var(--card);color:var(--ink)}
+.btn.del{background:var(--card);color:var(--danger);border-color:var(--danger)}
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.sheet{background:var(--paper);width:100%;max-width:520px;border:2px solid var(--ink);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto}
+label{display:block;font-weight:700;font-size:14px;margin-top:14px}
+input,select{font:inherit;width:100%;padding:11px;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);margin-top:6px}
+.hint{font-size:12px;color:var(--mute);margin-top:4px;font-weight:500}
+.empty{text-align:center;padding:26px 10px;color:var(--mute)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="tabbar" id="tabs"></div>
+<div id="modal"></div>
+<script>
+var KEY="habit-workbook-v1",S={habits:[],logs:{},seeded:false};
+try{var r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
+if(!S.seeded&&!S.habits.length){S.seeded=true;S.habits=[
+{id:"h1",name:"Drink 2 L water",emoji:"💧",weekly:7,monthly:28},
+{id:"h2",name:"Read 20 pages",emoji:"📖",weekly:5,monthly:20},
+{id:"h3",name:"Workout",emoji:"🏃",weekly:3,monthly:12}]}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function addDays(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)}
+function wkStart(d){return addDays(d,-((d.getDay()+6)%7))}
+var TODAY=new Date(),view="today",sel=new Date(),pmode="week",wOff=0,mOff=0;
+var DN=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+function isDone(h,k){return !!(S.logs[h.id]&&S.logs[h.id][k])}
+function toggle(id,k){var L=S.logs[id]=S.logs[id]||{};if(L[k])delete L[k];else L[k]=1;save();render()}
+function weekCount(h,ws){var n=0;for(var i=0;i<7;i++)if(isDone(h,ymd(addDays(ws,i))))n++;return n}
+function monthCount(h,y,m){var p=y+"-"+String(m+1).padStart(2,"0"),n=0,L=S.logs[h.id]||{};for(var k in L)if(k.indexOf(p)===0)n++;return n}
+function streak(h){var d=new Date(TODAY);if(!isDone(h,ymd(d)))d=addDays(d,-1);var n=0;while(isDone(h,ymd(d))){n++;d=addDays(d,-1)}return n}
+function bar(v,t){var p=t?Math.min(100,Math.round(v/t*100)):0;return '<div class="bar"><i class="'+(v>=t?"full":"")+'" style="width:'+p+'%"></i></div>'}
+function fmt(d,o){return d.toLocaleDateString(undefined,o)}
+
+function today(){
+  var k=ymd(sel),ws=wkStart(sel),n=S.habits.filter(function(h){return isDone(h,k)}).length,t=S.habits.length,p=t?Math.round(n/t*100):0;
+  var isT=k===ymd(TODAY);
+  var h='<div class="row"><div class="grow"><h1>'+(isT?"Today":fmt(sel,{weekday:"long"}))+'</h1><div class="sub">'+fmt(sel,{month:"long",day:"numeric",year:"numeric"})+'</div></div>'+
+  '<div class="ring" style="background:conic-gradient(var(--acc) '+p+'%,var(--paper) 0)"><b>'+n+'/'+t+'</b></div></div>'+
+  '<div class="nav"><button aria-label="Previous day" onclick="shiftDay(-1)">‹</button><span>'+(isT?"Check in":'<a href="#" onclick="sel=new Date();render();return false" style="color:var(--acc)">Back to today</a>')+'</span><button aria-label="Next day" onclick="shiftDay(1)">›</button></div>';
+  if(!t)return h+'<div class="card empty">No habits yet. Add your first one in the Targets tab.</div>';
+  S.habits.forEach(function(x){var d=isDone(x,k),wc=weekCount(x,ws),s=streak(x);
+    h+='<div class="card"><div class="row"><button class="chk '+(d?"on":"")+'" aria-label="Mark '+esc(x.name)+'" aria-pressed="'+d+'" onclick="toggle(\''+x.id+'\',\''+k+'\')">'+(d?"✓":"")+'</button><div class="emoji">'+esc(x.emoji)+'</div><div class="grow"><div class="name">'+esc(x.name)+'</div><div class="meta">Week '+wc+'/'+x.weekly+(s?' · 🔥 '+s+' day'+(s>1?"s":""):"")+'</div></div></div>'+bar(wc,x.weekly)+'</div>'});
+  return h}
+function shiftDay(n){var d=addDays(sel,n);if(d>TODAY)return;sel=d;render()}
+
+function targets(){
+  var h='<h1>Targets</h1><div class="sub">Set how often you want to do each habit.</div>';
+  if(!S.habits.length)h+='<div class="card empty">Nothing here yet. Tap the button below to set your first target.</div>';
+  S.habits.forEach(function(x){h+='<div class="card"><div class="row"><div class="emoji">'+esc(x.emoji)+'</div><div class="grow"><div class="name">'+esc(x.name)+'</div><div class="meta">'+x.weekly+'× per week · '+x.monthly+' days per month</div></div><button class="nav" style="all:unset"></button><button class="chk" aria-label="Edit '+esc(x.name)+'" onclick="edit(\''+x.id+'\')">✎</button></div></div>'});
+  return h+'<button class="btn" onclick="edit()">Add a habit</button>'}
+function edit(id){
+  var x=S.habits.filter(function(h){return h.id===id})[0]||{name:"",emoji:"⭐",weekly:5,monthly:20},o="";
+  for(var i=1;i<=7;i++)o+='<option value="'+i+'"'+(i==x.weekly?" selected":"")+'>'+i+(i==1?" day":" days")+' per week</option>';
+  document.getElementById("modal").innerHTML='<div class="modal" onclick="if(event.target===this)closeM()"><div class="sheet"><h2>'+(id?"Edit habit":"New habit")+'</h2>'+
+  '<label for="fn">Habit name</label><input id="fn" maxlength="40" placeholder="e.g. Stretch for 10 minutes" value="'+esc(x.name)+'">'+
+  '<label for="fe">Emoji</label><input id="fe" maxlength="4" value="'+esc(x.emoji)+'">'+
+  '<label for="fw">Weekly goal</label><select id="fw" onchange="document.getElementById(\'fm\').value=this.value*4">'+o+'</select>'+
+  '<label for="fm">Monthly goal (days)</label><input id="fm" type="number" min="1" max="31" value="'+x.monthly+'"><div class="hint">Starts at 4 weeks of your weekly goal. Change it if you want a different target.</div>'+
+  '<button class="btn" onclick="saveH(\''+(id||"")+'\')">Save habit</button>'+(id?'<button class="btn del" onclick="delH(\''+id+'\')">Delete habit</button>':"")+'<button class="btn ghost" onclick="closeM()">Cancel</button></div></div>'}
+function closeM(){document.getElementById("modal").innerHTML=""}
+function saveH(id){
+  var n=document.getElementById("fn").value.trim();if(!n){document.getElementById("fn").focus();return}
+  var o={name:n,emoji:document.getElementById("fe").value.trim()||"⭐",weekly:+document.getElementById("fw").value,monthly:Math.max(1,Math.min(31,+document.getElementById("fm").value||20))};
+  if(id){S.habits.forEach(function(h){if(h.id===id){h.name=o.name;h.emoji=o.emoji;h.weekly=o.weekly;h.monthly=o.monthly}})}
+  else{o.id="h"+Date.now();S.habits.push(o)}
+  save();closeM();render()}
+function delH(id){if(!confirm("Delete this habit and its history?"))return;S.habits=S.habits.filter(function(h){return h.id!==id});delete S.logs[id];save();closeM();render()}
+
+function progress(){
+  var h='<h1>Progress</h1><div class="seg"><button class="'+(pmode==="week"?"on":"")+'" onclick="pmode=\'week\';render()">Weekly</button><button class="'+(pmode==="month"?"on":"")+'" onclick="pmode=\'month\';render()">Monthly</button></div>';
+  if(!S.habits.length)return h+'<div class="card empty">Add a habit to start tracking progress.</div>';
+  return h+(pmode==="week"?weekView():monthView())}
+function weekView(){
+  var ws=addDays(wkStart(TODAY),wOff*7),we=addDays(ws,6),tk=ymd(TODAY),tot=0,goal=0;
+  var h='<div class="nav"><button aria-label="Previous week" onclick="wOff--;render()">‹</button><span>'+fmt(ws,{month:"short",day:"numeric"})+' – '+fmt(we,{month:"short",day:"numeric"})+'</span><button aria-label="Next week" onclick="if(wOff<0){wOff++;render()}">›</button></div>';
+  var t='<div class="card scroll"><table><tr><th class="l">Habit</th>';
+  for(var i=0;i<7;i++)t+='<th>'+DN[i]+'<br>'+addDays(ws,i).getDate()+'</th>';
+  t+='<th>Done</th></tr>';
+  S.habits.forEach(function(x){var c=weekCount(x,ws);tot+=Math.min(c,x.weekly);goal+=x.weekly;
+    t+='<tr><td class="l">'+esc(x.emoji)+' '+esc(x.name.length>11?x.name.slice(0,10)+"…":x.name)+'</td>';
+    for(var i=0;i<7;i++){var d=addDays(ws,i),k=ymd(d),fut=d>TODAY;t+='<td><button class="dot '+(isDone(x,k)?"on ":"")+(k===tk?"today":"")+'" '+(fut?"disabled style=\"opacity:.35\"":"")+' aria-label="'+esc(x.name)+' '+DN[i]+'" onclick="toggle(\''+x.id+'\',\''+k+'\')"></button></td>'}
+    t+='<td><b>'+c+'/'+x.weekly+'</b></td></tr>'});
+  t+='</table></div>';
+  var p=goal?Math.round(tot/goal*100):0;
+  h+='<div class="card"><div class="row"><div class="grow"><h2>Weekly goal</h2><div class="sub">'+tot+' of '+goal+' check-ins toward your targets</div></div><div class="ring" style="background:conic-gradient(var(--acc) '+p+'%,var(--paper) 0)"><b>'+p+'%</b></div></div></div>'+t;
+  S.habits.forEach(function(x){var c=weekCount(x,ws);h+='<div class="card"><div class="row"><div class="emoji">'+esc(x.emoji)+'</div><div class="grow"><div class="name">'+esc(x.name)+'</div><div class="meta">'+(c>=x.weekly?"Goal reached this week":(x.weekly-c)+" more to hit your weekly goal")+'</div></div></div>'+bar(c,x.weekly)+'</div>'});
+  return h}
+function monthView(){
+  var base=new Date(TODAY.getFullYear(),TODAY.getMonth()+mOff,1),y=base.getFullYear(),m=base.getMonth(),dim=new Date(y,m+1,0).getDate(),lead=(base.getDay()+6)%7,tot=0,goal=0;
+  var h='<div class="nav"><button aria-label="Previous month" onclick="mOff--;render()">‹</button><span>'+fmt(base,{month:"long",year:"numeric"})+'</span><button aria-label="Next month" onclick="if(mOff<0){mOff++;render()}">›</button></div>';
+  var cards="";
+  S.habits.forEach(function(x){var c=monthCount(x,y,m);tot+=Math.min(c,x.monthly);goal+=x.monthly;
+    var cal='<div class="cal">'+DN.map(function(d){return '<div class="x">'+d[0]+'</div>'}).join("");
+    for(var i=0;i<lead;i++)cal+='<div class="x"></div>';
+    for(var d=1;d<=dim;d++){var k=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");cal+='<div class="'+(isDone(x,k)?"on":"")+'">'+d+'</div>'}
+    cal+='</div>';
+    cards+='<div class="card"><div class="row"><div class="emoji">'+esc(x.emoji)+'</div><div class="grow"><div class="name">'+esc(x.name)+'</div><div class="meta">'+c+' of '+x.monthly+' days · '+(c>=x.monthly?"goal reached":(x.monthly-c)+" to go")+'</div></div></div>'+bar(c,x.monthly)+cal+'</div>'});
+  var p=goal?Math.round(tot/goal*100):0;
+  return h+'<div class="card"><div class="row"><div class="grow"><h2>Monthly goal</h2><div class="sub">'+tot+' of '+goal+' days across all habits</div></div><div class="ring" style="background:conic-gradient(var(--acc) '+p+'%,var(--paper) 0)"><b>'+p+'%</b></div></div></div>'+cards}
+
+function render(){
+  var a=document.getElementById("app");
+  a.innerHTML=view==="today"?today():view==="targets"?targets():progress();
+  var T=[["today","✅","Today"],["progress","📊","Progress"],["targets","🎯","Targets"]];
+  document.getElementById("tabs").innerHTML=T.map(function(t){return '<button class="'+(view===t[0]?"on":"")+'" onclick="view=\''+t[0]+'\';render();window.scrollTo(0,0)"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("")}
+render();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+</script>
+</body>
+</html>
